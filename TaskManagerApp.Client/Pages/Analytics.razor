@@ -1,0 +1,49 @@
+@page "/analytics"
+@using TaskManagerApp.Client.Models
+@using TaskManagerApp.Client.Services
+@inject ITaskService TaskService
+@rendermode InteractiveAuto
+
+<PageTitle>Analíticas</PageTitle>
+
+<h1>Analíticas (Interactive Auto)</h1>
+<p>Si es tu primera visita, se ha renderizado en el servidor (SSR) y luego la interactividad se activó (Server -> WASM descarga en background). En las siguientes visitas, se ejecutará 100% en WebAssembly en el cliente.</p>
+
+@if (tasks == null)
+{
+    <p><em>Calculando métricas...</em></p>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Resumen de Tareas</h5>
+            <p class="card-text">Total de tareas: <strong>@tasks.Count</strong></p>
+            <p class="card-text">Tareas completadas: <strong>@tasks.Count(t => t.IsCompleted)</strong></p>
+            <p class="card-text">Tareas pendientes: <strong>@tasks.Count(t => !t.IsCompleted)</strong></p>
+            
+            @{ 
+                var percentage = tasks.Count > 0 ? (int)((tasks.Count(t => t.IsCompleted) / (double)tasks.Count) * 100) : 0;
+            }
+            <div class="progress" style="height: 20px; margin-bottom: 20px;">
+                <div class="progress-bar" role="progressbar" style="width: @percentage%;" aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100">@percentage%</div>
+            </div>
+            
+            <button class="btn btn-outline-primary mt-3" @onclick="RefreshData">Actualizar datos</button>
+        </div>
+    </div>
+}
+
+@code {
+    private List<TaskItem>? tasks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshData();
+    }
+
+    private async Task RefreshData()
+    {
+        tasks = await TaskService.GetTasksAsync();
+    }
+}

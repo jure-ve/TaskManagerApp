@@ -1,0 +1,68 @@
+@page "/tasks"
+@using TaskManagerApp.Client.Models
+@using TaskManagerApp.Client.Services
+@inject ITaskService TaskService
+@rendermode InteractiveServer
+
+<PageTitle>Gestión de Tareas</PageTitle>
+
+<h1>Gestión de Tareas (Interactive Server)</h1>
+<p>Esta página corre en el servidor y se comunica con el navegador mediante SignalR. Prueba agregar una tarea y mira cómo la UI se actualiza instantáneamente.</p>
+
+<div class="mb-3">
+    <input @bind="newTaskTitle" @bind:event="oninput" @onkeyup="HandleKeyUp" placeholder="Nueva tarea..." class="form-control" />
+    <button @onclick="AddTask" class="btn btn-primary mt-2">Agregar</button>
+</div>
+
+@if (tasks == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <ul class="list-group">
+        @foreach (var task in tasks)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span style="text-decoration: @(task.IsCompleted ? "line-through" : "none")">@task.Title</span>
+                <button @onclick="() => ToggleTask(task.Id)" class="btn btn-sm @(task.IsCompleted ? "btn-warning" : "btn-success")">
+                    @(task.IsCompleted ? "Desmarcar" : "Completar")
+                </button>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private List<TaskItem>? tasks;
+    private string newTaskTitle = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        tasks = await TaskService.GetTasksAsync();
+    }
+
+    private async Task AddTask()
+    {
+        if (!string.IsNullOrWhiteSpace(newTaskTitle))
+        {
+            await TaskService.AddTaskAsync(newTaskTitle);
+            newTaskTitle = string.Empty;
+            tasks = await TaskService.GetTasksAsync();
+        }
+    }
+
+    private async Task HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await AddTask();
+        }
+    }
+
+    private async Task ToggleTask(Guid id)
+    {
+        await TaskService.ToggleTaskAsync(id);
+        tasks = await TaskService.GetTasksAsync();
+    }
+}
