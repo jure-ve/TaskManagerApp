@@ -2,12 +2,19 @@
 @using TaskManagerApp.Client.Models
 @using TaskManagerApp.Client.Services
 @inject ITaskService TaskService
+@inject PersistentComponentState ApplicationState
+@implements IDisposable
 @rendermode InteractiveAuto
 
 <PageTitle>Analíticas</PageTitle>
 
 <h1>Analíticas (Interactive Auto)</h1>
 <p>Si es tu primera visita, se ha renderizado en el servidor (SSR) y luego la interactividad se activó (Server -> WASM descarga en background). En las siguientes visitas, se ejecutará 100% en WebAssembly en el cliente.</p>
+
+<div class="alert alert-info">
+    <strong>Entorno actual (RendererInfo):</strong> @RendererInfo.Name <br />
+    <strong>Interactivo:</strong> @(RendererInfo.IsInteractive ? "Sí" : "No (Prerendering)")
+</div>
 
 @if (tasks == null)
 {
@@ -36,14 +43,38 @@ else
 
 @code {
     private List<TaskItem>? tasks;
+    private PersistingComponentStateSubscription persistingSubscription;
 
     protected override async Task OnInitializedAsync()
     {
-        await RefreshData();
+        persistingSubscription = ApplicationState.RegisterOnPersisting(PersistData);
+
+        if (!ApplicationState.TryTakeFromJson<List<TaskItem>>("tasks", out var restored))
+        {
+            await RefreshData();
+        }
+        else
+        {
+            tasks = restored;
+        }
     }
 
     private async Task RefreshData()
     {
         tasks = await TaskService.GetTasksAsync();
+    }
+
+    private Task PersistData()
+    {
+        if (tasks != null)
+        {
+            ApplicationState.PersistAsJson("tasks", tasks);
+        }
+        return Task.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+        persistingSubscription.Dispose();
     }
 }

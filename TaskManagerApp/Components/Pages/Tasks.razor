@@ -9,6 +9,11 @@
 <h1>Gestión de Tareas (Interactive Server)</h1>
 <p>Esta página corre en el servidor y se comunica con el navegador mediante SignalR. Prueba agregar una tarea y mira cómo la UI se actualiza instantáneamente.</p>
 
+<div class="alert alert-info">
+    <strong>Entorno actual (RendererInfo):</strong> @RendererInfo.Name <br />
+    <strong>Interactivo:</strong> @(RendererInfo.IsInteractive ? "Sí" : "No (Prerendering)")
+</div>
+
 <div class="mb-3">
     <input @bind="newTaskTitle" @bind:event="oninput" @onkeyup="HandleKeyUp" placeholder="Nueva tarea..." class="form-control" />
     <button @onclick="AddTask" class="btn btn-primary mt-2">Agregar</button>
@@ -39,6 +44,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        // En InteractiveServer, el estado se mantiene en memoria en el servidor para esta conexión SignalR.
+        // Ojo: Si el usuario recarga la página, esta instancia del componente se destruye y el estado se pierde.
         tasks = await TaskService.GetTasksAsync();
     }
 
