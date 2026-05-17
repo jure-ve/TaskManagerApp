@@ -1,8 +1,9 @@
-using TaskManagerApp.Client.Models;
+using TaskManagerApp.Shared.Models;
+using TaskManagerApp.Shared.Services;
 
-namespace TaskManagerApp.Client.Services;
+namespace TaskManagerApp.Services;
 
-public class MockTaskService : ITaskService
+public class ServerTaskService : ITaskService
 {
     private readonly List<TaskItem> _tasks = new()
     {

@@ -1,0 +1,21 @@
+@page "/login"
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+
+<PageTitle>Iniciar Sesión</PageTitle>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="card p-4" style="width: 100%; max-width: 400px;">
+        <h2 class="text-center mb-4">Iniciar Sesión</h2>
+        <p class="text-center text-info mb-4">Ingresa tu nombre para entrar a la plataforma.</p>
+        
+        <form method="post" action="/api/login" data-enhance="false">
+            <div class="mb-3">
+                <label for="username" class="form-label">Nombre de Usuario</label>
+                <input type="text" id="username" name="username" class="form-control" required placeholder="Ej: Jure" />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Entrar al Sistema</button>
+        </form>
+    </div>
+</div>

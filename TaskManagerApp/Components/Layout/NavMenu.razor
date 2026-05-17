@@ -25,6 +25,30 @@
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Analíticas
             </NavLink>
         </div>
+        
+        <AuthorizeView>
+            <Authorized>
+                <div class="nav-item px-3 mt-4">
+                    <span class="nav-link text-white">
+                        <span class="bi bi-person-circle" aria-hidden="true"></span> @context.User.Identity?.Name
+                    </span>
+                </div>
+                <div class="nav-item px-3">
+                    <form action="/api/logout" method="post">
+                        <button type="submit" class="nav-link btn btn-link w-100 text-start text-danger">
+                            <span class="bi bi-box-arrow-right" aria-hidden="true"></span> Salir
+                        </button>
+                    </form>
+                </div>
+            </Authorized>
+            <NotAuthorized>
+                <div class="nav-item px-3 mt-4">
+                    <NavLink class="nav-link text-success" href="login">
+                        <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> Iniciar Sesión
+                    </NavLink>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
     </nav>
 </div>
 

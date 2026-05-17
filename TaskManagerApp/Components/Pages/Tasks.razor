@@ -1,17 +1,21 @@
 @page "/tasks"
-@using TaskManagerApp.Client.Models
-@using TaskManagerApp.Client.Services
+@attribute [Authorize]
+@using TaskManagerApp.Shared.Models
+@using TaskManagerApp.Shared.Services
 @inject ITaskService TaskService
 @rendermode InteractiveServer
 
 <PageTitle>Gestión de Tareas</PageTitle>
 
-<h1>Gestión de Tareas (Interactive Server)</h1>
-<p>Esta página corre en el servidor y se comunica con el navegador mediante SignalR. Prueba agregar una tarea y mira cómo la UI se actualiza instantáneamente.</p>
+<h1>Gestión de Tareas <span class="badge-service">@TaskService.GetType().Name</span></h1>
+<p>Esta página corre en el servidor y se comunica con el navegador mediante SignalR.</p>
 
-<div class="alert alert-info">
-    <strong>Entorno actual (RendererInfo):</strong> @RendererInfo.Name <br />
-    <strong>Interactivo:</strong> @(RendererInfo.IsInteractive ? "Sí" : "No (Prerendering)")
+<div class="alert alert-info d-flex align-items-center">
+    <div>
+        <strong>Entorno:</strong> @RendererInfo.Name <br />
+        <strong>Interactivo:</strong> @(RendererInfo.IsInteractive ? "Sí" : "No (Prerendering)") <br />
+        <small>El servicio inyectado es <code>@TaskService.GetType().Name</code>, lo que significa que estamos accediendo a datos en <b>Memoria/BD</b> directamente, sin llamadas HTTP.</small>
+    </div>
 </div>
 
 <div class="mb-3">

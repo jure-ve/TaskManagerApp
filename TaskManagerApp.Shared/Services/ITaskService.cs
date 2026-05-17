@@ -1,6 +1,6 @@
-using TaskManagerApp.Client.Models;
+using TaskManagerApp.Shared.Models;
 
-namespace TaskManagerApp.Client.Services;
+namespace TaskManagerApp.Shared.Services;
 
 public interface ITaskService
 {

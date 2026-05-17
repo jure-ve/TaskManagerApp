@@ -1,4 +1,4 @@
-namespace TaskManagerApp.Client.Models;
+namespace TaskManagerApp.Shared.Models;
 
 public class TaskItem
 {

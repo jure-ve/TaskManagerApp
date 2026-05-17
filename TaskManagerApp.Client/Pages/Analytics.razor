@@ -1,6 +1,7 @@
 @page "/analytics"
-@using TaskManagerApp.Client.Models
-@using TaskManagerApp.Client.Services
+@attribute [Authorize]
+@using TaskManagerApp.Shared.Models
+@using TaskManagerApp.Shared.Services
 @inject ITaskService TaskService
 @inject PersistentComponentState ApplicationState
 @implements IDisposable
@@ -8,12 +9,15 @@
 
 <PageTitle>Analíticas</PageTitle>
 
-<h1>Analíticas (Interactive Auto)</h1>
-<p>Si es tu primera visita, se ha renderizado en el servidor (SSR) y luego la interactividad se activó (Server -> WASM descarga en background). En las siguientes visitas, se ejecutará 100% en WebAssembly en el cliente.</p>
+<h1>Analíticas <span class="badge-service">@TaskService.GetType().Name</span></h1>
+<p>Esta página corre en modo Auto. En SSR será <code>ServerTaskService</code> y en el cliente será <code>ClientTaskService</code>.</p>
 
-<div class="alert alert-info">
-    <strong>Entorno actual (RendererInfo):</strong> @RendererInfo.Name <br />
-    <strong>Interactivo:</strong> @(RendererInfo.IsInteractive ? "Sí" : "No (Prerendering)")
+<div class="alert alert-info d-flex align-items-center">
+    <div>
+        <strong>Entorno:</strong> @RendererInfo.Name <br />
+        <strong>Interactivo:</strong> @(RendererInfo.IsInteractive ? "Sí" : "No (Prerendering)") <br />
+        <small>Servicio inyectado: <code>@TaskService.GetType().Name</code>. Si es ClientTaskService, los datos se piden por HTTP.</small>
+    </div>
 </div>
 
 @if (tasks == null)

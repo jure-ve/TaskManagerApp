@@ -12,4 +12,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TaskManagerApp.Shared\TaskManagerApp.Shared.csproj" />
+  </ItemGroup>
+
 </Project>
